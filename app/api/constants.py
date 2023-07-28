@@ -1,5 +1,7 @@
 NOT_FOUND_POST: str = 'Пост не найден!Самоуничтожение вселенной через 3..2..'
 DELETE_USER_NOT_ALLOWED: str = 'Удаление пользователей запрещено!'
 NOT_OWNER: str = 'Вы не можете редактировать или удалить этот пост!'
-NOT_FOUND_LIKE = 'Лайк не найден!'
+NOT_FOUND_LIKE: str = 'Лайк не найден!'
 CANNOT_LIKE_OWN_POST: str = 'Вы не можете поставить лайк под своим постом!'
+LIKE_ALREADY_EXISTS: str = 'Вы уже поставили лайк на этот пост!'
+EMAIL_ALREADY_EXISTS: str = 'Такая почта уже зарегистрирована!'

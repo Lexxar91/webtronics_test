@@ -1,7 +1,10 @@
 from fastapi import APIRouter, HTTPException
 
+
 from app.api.constants import DELETE_USER_NOT_ALLOWED
+
 from app.core.user import auth_backend, fastapi_users
+
 from app.schemas.user import UserRead, UserUpdate, UserCreate
 
 router = APIRouter()

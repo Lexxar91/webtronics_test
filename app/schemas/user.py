@@ -1,5 +1,5 @@
 from fastapi_users import schemas
-from pydantic import Field
+from pydantic import Field, BaseModel
 
 
 class UserRead(schemas.BaseUser[int]):
@@ -12,3 +12,7 @@ class UserCreate(schemas.BaseUserCreate):
 
 class UserUpdate(schemas.BaseUserUpdate):
     pass
+
+
+class UserLikesResponse(BaseModel):
+    my_likes_count: int

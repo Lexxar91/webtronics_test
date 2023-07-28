@@ -1,12 +1,11 @@
 from fastapi import HTTPException
-from sqlalchemy import select, literal
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from http import HTTPStatus
-from app.api.constants import NOT_FOUND_POST, NOT_OWNER, NOT_FOUND_LIKE, CANNOT_LIKE_OWN_POST
+from app.api.constants import NOT_FOUND_POST, NOT_OWNER, NOT_FOUND_LIKE, CANNOT_LIKE_OWN_POST, LIKE_ALREADY_EXISTS, \
+    EMAIL_ALREADY_EXISTS
 from app.crud.post import post_crud
-from app.core.user import current_user
-from app.models import PostLike
+from app.crud.user import user_crud
+from app.models import User
 
 
 async def check_post_exists(
@@ -25,7 +24,7 @@ async def check_post_exists(
 async def check_post_owner(
         post_id: int,
         session: AsyncSession,
-        user: current_user
+        user: User,
 ):
     post = await post_crud.get_object(post_id, session)
     if post.user_id != user.id:
@@ -36,8 +35,8 @@ async def check_post_owner(
     return post
 
 
-async def check_like_exists(post_id, user, session):
-    like = await post_crud.remove_like(post_id, user, session)
+async def check_like_exists(post_id, user_id, session):
+    like = await post_crud.get_like_by_user_and_post_id(post_id, user_id, session)
     if not like:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
@@ -53,4 +52,32 @@ async def check_not_liking_own_post(post_id, user, session):
             status_code=HTTPStatus.FORBIDDEN,
             detail=CANNOT_LIKE_OWN_POST
         )
-    return True
+    return post
+
+
+async def check_on_duplicate_like(
+        post_id,
+        user,
+        session: AsyncSession
+):
+    get_like = await post_crud.get_like_by_user_and_post_id(post_id, user.id, session)
+    if get_like is not None:
+        raise HTTPException(
+            status_code=HTTPStatus.CONFLICT,
+            detail=LIKE_ALREADY_EXISTS
+        )
+    return get_like
+
+
+async def check_on_duplicate_email_in_db(
+        email,
+        session: AsyncSession
+):
+    check_email = await user_crud.email_exists_in_db(email, session)
+    if check_email is not None:
+        raise HTTPException(
+            status_code=HTTPStatus.CONFLICT,
+            detail=EMAIL_ALREADY_EXISTS
+        )
+    return check_email
+

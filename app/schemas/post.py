@@ -17,7 +17,6 @@ class PostUpdate(PostBase):
 
 
 class PostInDB(PostBase):
-    id: int
     username: str
 
     class Config:

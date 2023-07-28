@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Optional
 
 from fastapi import Depends, Request
 from fastapi_users import (
@@ -7,8 +7,9 @@ from fastapi_users import (
 from fastapi_users.authentication import (
     AuthenticationBackend, BearerTransport, JWTStrategy
 )
+
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from pydantic import parse_obj_as
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -16,6 +17,7 @@ from app.core.config import settings
 from app.core.db import get_async_session
 from app.models.user import User
 from app.schemas.user import UserCreate
+from app.utils.utils import check_email_async
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
@@ -57,7 +59,14 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     ):
         print(f'Пользователь {user.email} зарегистрирован.')
 
-    async def create(self, user: UserCreate, **kwargs) -> User:
+    async def create(self, user: UserCreate,  **kwargs) -> User:
+        response = await check_email_async(user.email)
+        if response["result"] == "deliverable":
+            print("Email exists")
+        elif response["result"] == "undeliverable":
+            print("Email does not exist")
+        else:
+            print("Unable to verify email")
         user_data = user.dict()
         user_data.pop("password", None)
         return await super().create(user, **kwargs)
