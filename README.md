@@ -41,7 +41,7 @@ Backend API для социальной сети на Python, FastAPI и SQLite.
 ## Начальная настройка
 
 Выполнить миграции SQLAlchemy:
-- alembic upgrade head
+- alembic upgrade head <br>
 Это создаст таблицы пользователей, постов и пр.
 
 ## Запуск
