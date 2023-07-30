@@ -1,11 +1,14 @@
+from app.models import User
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import User
-
 
 class CRUDBase:
+    """
+    Базовый класс для CRUD (Create, Read, Update, Delete) операций с объектами базы данных.
+    :param model: SQLAlchemy модель, с которой будет выполняться CRUD.
+    """
     def __init__(self, model):
         self.model = model
 

@@ -1,9 +1,11 @@
 from typing import Optional
-
 from pydantic import BaseSettings, EmailStr
 
 
 class Settings(BaseSettings):
+    """
+    Класс для хранения настроек приложения.
+    """
     app_title = 'Webtronics social network'
     secret: str = 'SECRET'
     database_url: str
@@ -15,3 +17,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+

@@ -1,12 +1,11 @@
 import contextlib
 
-from fastapi_users.exceptions import UserAlreadyExists
-from pydantic import EmailStr
-
 from app.core.config import settings
 from app.core.db import get_async_session
 from app.core.user import get_user_db, get_user_manager
 from app.schemas.user import UserCreate
+from fastapi_users.exceptions import UserAlreadyExists
+from pydantic import EmailStr
 
 # Превращаем асинхронные генераторы в асинхронные менеджеры контекста.
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)
@@ -43,8 +42,13 @@ async def create_user(
         pass
 
 
-
-async def create_first_superuser():
+async def create_first_superuser() -> None:
+    """
+    Создает первого суперпользователя при наличии данных в настройках.
+    Если в настройках указан email и пароль первого суперпользователя, функция использует
+    эти данные для создания суперпользователя.
+    :return: None
+    """
     if (settings.first_superuser_email is not None
             and settings.first_superuser_password is not None):
         await create_user(

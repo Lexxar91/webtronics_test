@@ -1,9 +1,13 @@
 import aiohttp
+import os
+from dotenv import load_dotenv
 
-kickbox_api_key = "live_3e97967c75d0b29fd71c13a25b02afb36e8caa71d8ccbe0d71d312f3bb74e305"
+load_dotenv()
+
+kickbox_api_key = os.getenv("KICKBOX_API_KEY")
 
 
-async def check_email_async(email):
+async def check_email_async(email: str) -> dict:
     url = "https://api.kickbox.com/v2/verify"
     params = {"email": email, "apikey": kickbox_api_key}
 
